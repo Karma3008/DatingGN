@@ -13,13 +13,14 @@
                 <a class="nav-link" routerLink="/messages" routerLinkActive="active">Messages</a>
               </li>
           </ng-container>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link" routerLink="/errors" routerLinkActive="active">Errors</a>
-          </li>
+          </li> -->
         </ul>
 
         <div class="dropdown"  *ngIf="(currentUser$ | async) as user" dropdown>
-            <a class="dropdown-toggle text-light text-decoration-none" dropdownToggle>Bonjour {{user.username | titlecase}}</a>
+           <img src="{{user.photoUrl || './assets/user.png' }}" alt="user photo">
+            <a class="dropdown-toggle text-light text-decoration-none ms-2" dropdownToggle>Salut {{user.username | titlecase}}</a>
             <div class="dropdown-menu" *dropdownMenu>
                 <a class="dropdown-item" routerLink="/member/edit">Modifier mon profile</a>
                 <a class="dropdown-item" (click)="logout()">Déconnexion</a> 
