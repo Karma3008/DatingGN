@@ -11,7 +11,7 @@
     </div>
     <div class="col-4">
         <div class="card">
-            <img src="{{member.photoUrl || './assets/user.png'}}" alt="{{member.knownAs}}" class="card-img-top img-thumbnail">
+            <img src="{{ member.photoUrl || './assets/user.png'}}" alt="{{member.knownAs}}" class="card-img-top img-thumbnail">
         <div class="card-body">
             <div>
                 <strong>Ville : </strong>
@@ -23,11 +23,11 @@
             </div>
             <div>
                 <strong>Dernière connexion : </strong>
-                <p>{{member.lastActive}}</p>
+                <p>{{member.lastActive + 'Z'| timeago }}</p>
             </div>
             <div>
                 <strong>Membre depuis : </strong>
-                <p>{{member.created}}</p>
+                <p>{{member.created | date : 'yy MMMM yyyy' }}</p>
             </div>
         </div>
         <div class="card-footer">
@@ -71,7 +71,7 @@
                </tab>
                
                 
-            <tab heading="Modifiez vos photos">
+            <tab heading="Modifiez vos images">
                 <app-photo-editor [member]="member"></app-photo-editor>
             </tab>
            

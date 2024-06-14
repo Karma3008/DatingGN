@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FileUploadModule, FileUploader } from 'ng2-file-upload';
+import { FileUploader } from 'ng2-file-upload';
 import { take } from 'rxjs';
 import { Member } from 'src/app/_model/member';
 import { Photo } from 'src/app/_model/photo';

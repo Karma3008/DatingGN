@@ -8,7 +8,6 @@ namespace API.Data;
 public class UserRepository : IUserRepository
 {
     private readonly DataContext _context;
-
     public IMapper _mapper;
 
     public UserRepository(DataContext context, IMapper mapper)
@@ -16,7 +15,7 @@ public class UserRepository : IUserRepository
        _context = context;
         _mapper = mapper;
     }
-    public async Task<AppUser> GetUsersByIdAsync(int id)
+    public async Task<AppUser> GetUserByIdAsync(int id)
     {
         return await _context.Users.FindAsync(id);
     }
@@ -54,10 +53,36 @@ public class UserRepository : IUserRepository
             .SingleOrDefaultAsync();
     }
 
-    public  async Task<IEnumerable<MemberDto>> GetMembersAsync()
+    public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
     {
-       return await _context.Users
-              .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
-              .ToListAsync();
+            var query = _context.Users.AsQueryable();
+            query = query.Where(u => u.UserName != userParams.CurrentUsername);
+            query = query.Where(u => u.Gender == userParams.Gender);
+            
+            var minDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MaxAge - 1));
+            var maxDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MinAge));
+
+            query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
+
+            query = userParams.OrderBy switch
+            {
+                "create" => query.OrderByDescending(u => u.Created),
+                _ => query.OrderByDescending(u => u.LastActive)
+            };
+             
+            return await PagedList<MemberDto>.CreateAsync(
+                query.AsNoTracking().ProjectTo<MemberDto>(_mapper.ConfigurationProvider),
+                userParams.PageNumber,
+                userParams.PageSize);
+    }
+
+    // public async Task<AppUser> GetUserByIdAsync(int id) 
+    // {
+    //     return await _context.Users.FindAsync(id);    
+    // }
+
+    Task IUserRepository.GetUsersByIdAsync(int v)
+    {
+        throw new NotImplementedException();
     }
 }
